@@ -57,4 +57,25 @@ public class CustomersController : ControllerBase
         
         return CreatedAtAction(nameof(GetCustomerRentals), new { id }, null);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> AddCustomer([FromBody] CustomerDto dto)
+    {
+        await _service.AddCustomerAsync(dto);
+        return Ok();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCustomer(int id, [FromBody] CustomerDto dto)
+    {
+        await _service.UpdateCustomerAsync(id, dto);
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCustomer(int id)
+    {
+        await _service.DeleteCustomerAsync(id);
+        return Ok();
+    }
 }

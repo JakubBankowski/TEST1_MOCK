@@ -14,7 +14,7 @@ public class RentalRepository : IRentalRepository
                             ?? throw new InvalidOperationException("Missing connection string");
     }
 
-    public async Task<CustomerDto> GetCustomerAsync(int id)
+    public async Task<CustomerDto?> GetCustomerAsync(int id)
     {
         await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
@@ -195,4 +195,45 @@ public class RentalRepository : IRentalRepository
             throw;
         }
     }
+
+    public async Task AddCustomerAsync(CustomerDto dto)
+    {
+        await using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        await using var command = new SqlCommand("""
+                                                 INSERT INTO Customer(first_name, last_name) VALUES (@firstName, @lastName);
+                                                 """, connection);
+        command.Parameters.AddWithValue("@firstName", dto.FirstName);
+        command.Parameters.AddWithValue("@lastName", dto.LastName);
+        
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateCustomerAsync(int customerId, CustomerDto dto)
+    {
+        await using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+        
+        await using var command = new SqlCommand("UPDATE Customer SET first_name = @firstName, last_name = @lastName WHERE id = @customerId;", connection);
+        command.Parameters.AddWithValue("@customerId", customerId);
+        command.Parameters.AddWithValue("@firstName", dto.FirstName);
+        command.Parameters.AddWithValue("@lastName", dto.LastName);
+        
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task DeleteCustomerAsync(int id)
+    {
+        await using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        await using var command = new SqlCommand(
+            "DELETE FROM Customer WHERE id = @id;", connection);
+        command.Parameters.AddWithValue("@id", id);
+        
+        await command.ExecuteNonQueryAsync();
+    }
+    
+    
 }
