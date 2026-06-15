@@ -1,8 +1,12 @@
+using TEST1_MOCK.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 
 var app = builder.Build();
 
