@@ -46,7 +46,7 @@ public class RentalRepository : IRentalRepository
         string lastName;
 
         await using (var customerCommand = new SqlCommand(@"
-                                                          SELECT first_name, last_name FROM Customer WHERE customer_id = @customerId;", connection))
+     SELECT first_name, last_name FROM Customer WHERE customer_id = @customerId;", connection))
                                                           
         {
             customerCommand.Parameters.AddWithValue("@customerId", id);
